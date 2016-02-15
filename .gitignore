@@ -1,1 +1,8 @@
 ~*
+
+*.synctex.gz
+*.~ml
+*.log
+*.aux
+*.toc
+*.out
