@@ -21,6 +21,7 @@
 \usepackage{xcolor}
 \usepackage{float}
 \usepackage{subfig}
+\usepackage[scaled=0.85]{beramono}
 \usepackage[lighttt]{lmodern}
 \floatstyle{boxed} 
 \restylefloat{figure}
@@ -56,7 +57,7 @@ Depuis de nombreuses années, l’industrie du logiciel essaye de trouver des m�
 
 Bien qu'OCaml---datant de 1996---soit plus récent qu'Eiffel---de 1986---ses origines sont plutôt plus anciennes.  OCaml dérive de ML, développé à Édimbourg en 1973. OCaml lui-m\^{e}me a débuté à l’INRIA, un institut de recherche français. Eiffel a été créé par Bertrand Meyer, un informaticien français qui est actuellement professeur de génie logiciel à l’ETH Zurich.
 
-Eiffel est un langage \enquote{orienté objet}, ce qui signifie qu'il modèle le monde comme une collection d’objets. Chaque objet peut effectuer des actions (\enquote{commandes}), et chaque objet a des propriétés (\enquote{requ\^{e}tes}).
+Eiffel est un langage \enquote{orienté objet}, ce qui signifie qu'il modèle le monde comme une collection d’objets. Chaque objet peut effectuer des actions (\enquote{commandes}), et chaque objet a des propriétés (\enquote{requêtes}).
 
 Par contre, OCaml est un langage multi-paradigme---mais, premièrement, c’est un langage fonctionnel. Dans un tel langage, les informations et les actions sont strictement séparées. Nous examinerons les conséquences de ces conceptions dans le reste du projet.
 
@@ -66,9 +67,9 @@ Eiffel a été conçu avec un seul objectif : améliorer la qualité de logiciel
  
 \section{La conception par contrat}
 
-Peut-être la caractéristique d'Eiffel la plus inhabituelle est « la conception par contrat ». Très souvent, lorsque les informaticiens veulent prouver qu’un algorithme est correct, ils utilisent les \enquote{préconditions}, les \enquote{postconditions} et les \enquote{invariants}. Si on examine un fragment de code, une précondition est un fait qui doit être vrai juste avant l’exécution du code. De même, une postcondition doit être vrai juste après l’exécution. Un invariant doit être vrai en tout temps.
+La caractéristique la plus inhabituelle d'Eiffel est « la conception par contrat ». Très souvent, lorsque les informaticiens veulent prouver qu’un algorithme est correct, ils utilisent les \enquote{préconditions}, les \enquote{postconditions} et les \enquote{invariants}. Si on examine un fragment de code, une précondition est un fait qui doit être vraie juste avant l’exécution du code. De même, une postcondition doit être vraie juste après l’exécution. Un invariant doit être vrai en tout temps.
 
-La plupart des langages n’encodent pas 	ces concepts mathématiques, mais Eiffel en encourage. Figure \ref{fig:pre-post-condition} montre un exemple. Nous définissons une classe qui représente un compte bancaire. C'est très simple. Premièrement, il y a un attribut \texttt{solde} qui stocke la somme d'argent qui est actuellement dans le compte. En outre, il y a une routine \texttt{dépose} qui prend en argument un montant d'argent pour ajouter au compte. Le bloc \texttt{require} contient une précondition: nous ne pouvons pas ajouter un montant négatif au compte. Le block \texttt{ensure} contient une postcondition: après avoir déposé un montant, le solde du compte doit être le solde initial plus la somme ajoutée.
+La plupart des langages n'encodent pas	ces concepts mathématiques, mais Eiffel l'incite. La Figure \ref{fig:pre-post-condition} montre un exemple. Nous définissons une classe qui représente un compte bancaire. C'est très simple. Premièrement, il y a un attribut \texttt{solde} qui stocke la somme d'argent qui est actuellement dans le compte. En outre, il y a une routine \texttt{dépose} qui prend en argument un montant d'argent pour ajouter au compte. Le bloc \texttt{require} contient une précondition: nous ne pouvons pas ajouter un montant négatif au compte. Le block \texttt{ensure} contient une postcondition: après avoir déposé un montant, le solde du compte doit être le solde initial plus la somme ajoutée.
 
 \begin{figure}[h]
 	\begin{lstlisting}[language=Eiffel]
@@ -217,6 +218,52 @@ La figure \ref{fig:mutable-tree} montre un organigramme qui est mis à jour dans
 La figure \ref{fig:immutable-tree} montre un organigramme dans un langage fonctionnel. L'opération ne modifie pas l'arbre original, mais elle plutôt crée une nouvelle référence et elle fabrique une nouvelle copie seulement de la partie d'arbre qui change. Les deux versions du organigramme peuvent bien coexister. Le code qui utilise la référence \texttt{organigramme} peut supposer que les données ne changent jamais.
 
 Nous reconnaissons depuis peu que les structures des données immuables sont souvent préférable. Elles facilitent de raisonner sur le comportement d'un programme parce qu'on n'a pas à se soucier de la possibilité que les données peuvent être changées de manière imprévue.
+
+\begin{figure}[h]
+	\begin{lstlisting}[language=Caml]
+let construis_message verbeux message = 
+  if verbeux then message else ""
+	\end{lstlisting}
+	
+	\caption{Un exemple de l'inférence de types en OCaml\protect\footnotemark}
+	\label{fig:type-inference-code}
+\end{figure}
+
+\footnotetext{Adapté de \url{https://www.cis.upenn.edu/~sweirich/icfp-plmw15/slides/pottier.pdf}}
+
+\begin{figure}[h]
+	\begin{lstlisting}[language=Eiffel]
+construis_message (verbeux: BOOLEAN; 
+                   message: STRING): STRING
+  do
+    if verbeux then
+      Result := message
+    else
+      Result := ""
+  end
+end
+	\end{lstlisting}
+	\caption{Une requête qui équivaut à la Figure \ref{fig:type-inference-code}}
+	\label{fig:without-type-inference-code}
+\end{figure}
+
+\section{L'inférence de types et la concision}
+
+OCaml et Eiffel sont langages à typage statique. Cela signifie qu'on sait le type de chaque valeur dans un programme---par exemple: un nombre entier, un nombre réel, une chaîne de caractères, un organigramme. Cependant, il y a une différence clé. En Eiffel, on doit indiquer le type d'un valeur très explicitement.
+
+La figure \ref{fig:type-inference-code} montre une fonction en OCaml qui construit un message. La fonction prend deux arguments: \texttt{verbeux}, qui indique si le résultat devrait être verbeux, et \texttt{message}, qui est le message verbeux. Le message non-verbeux est une chaîne vide. On ne précise jamais les types exacts de \texttt{verbeux} ou \texttt{message}: OCaml les calcule automatiquement. \texttt{verbeux} doit être booléen, également \texttt{message} doit être une chaîne de caractères.
+
+Comparez avec Eiffel (la Figure \ref{fig:without-type-inference-code}): on doit écrire \texttt{: BOOLEAN} et \texttt{: STRING} pour indiquer les types. Le code est beaucoup plus long. La force d'OCaml est qu'il permet aux programmeurs d'écrire des programmes concis et compréhensible. Ces qualités rendent la maintenance plus facile.
+
+\section{L'application partielle et la composition de fonctions}
+
+Un autre aspect intéressant d'OCaml est l'application partielle de fonctions. Ceci utilise la curryfication, qui transforme une fonction à plusieurs arguments à une série de fonctions à un argument. Par exemple, considérez la fonction \texttt{add x y = x + y}, qui prend deux nombres entiers et renvoie la somme. Évidemment, \texttt{add 2 3} renvoie \texttt{5}.
+
+On peut considérer cette fonction comme \texttt{(entier, entier) -> entier}: elle prend deux entiers et renvoie un entier. En fait, OCaml considère la fonction comme \texttt{entier -> (entier -> entier)}: une fonction qui prend un entier et renvoie une deuxième fonction, qui prend un entier et renvoie un entier. 
+
+On peut appliquer la fonction partiellement ainsi: \texttt{add6 = (add 6)}. Ceci rend \texttt{add2} comme une fonction \texttt{entier -> entier}. Elle prend un entier et le renvoie plus six. Par exemple, \texttt{add6 3} renvoie \texttt{9}.
+
+L'application partielle, entre autres outils, est un mécanisme puissant de combinaison de fonctions. Cela permet la réutilisation simple et fiable du code, un facteur important pour la qualité.
 
 \end{document}          
 
