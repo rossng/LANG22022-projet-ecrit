@@ -193,31 +193,31 @@ Ce système permet la réutilisation de plusieurs classes dans une seule classe 
 
 \chapter{OCaml}
 
-Comparé à Eiffel, OCaml n'est pas aussi concentré sur la prévention des erreurs. Malgré cela, une partie significative de sa fonctionnalité est utile pour écrire du code stable.
+Comparé à Eiffel, OCaml ne porte pas sur la prévention des erreurs. Malgré cela, une partie significative de sa fonctionnalité est utile pour écrire du code stable.
 
 \section{La programmation \enquote{fonctionnelle} et l'immutabilité par défaut}
 
-OCaml incitera fortement un style de la programmation \enquote{fonctionnelle}. Le style traditionnel de la programmation est \enquote{impératif}. Dans celle-là, on évite de causer des effets secondaires---alors que dans celle-ci les effets secondaires sont la norme. Un effet secondaire clé est la modification des données (la \enquote{mutation}).
+OCaml incitera fortement un style de programmation \enquote{fonctionnelle}. Le style traditionnel de la programmation est \enquote{impératif}. Dans la programmation fonctionnelle, on évite de causer des effets secondaires; dans la programmation impératif, les effets secondaires sont la norme. Un effet secondaire clé est la modification des données (la \enquote{mutation}).
 
 \begin{figure}[h]
 	\centering
 	\includegraphics[width=0.7\linewidth]{mutable_tree}
-	\caption{Un exemple d'une structure des données mutable}
+	\caption{Un exemple d'une structure des données mutables}
 	\label{fig:mutable-tree}
 \end{figure}
 
 \begin{figure}[h]
 	\centering
 	\includegraphics[width=0.7\linewidth]{immutable_tree}
-	\caption{Un exemple d'une structure des données immuable}
+	\caption{Un exemple d'une structure des données immuables}
 	\label{fig:immutable-tree}
 \end{figure}
 
-La figure \ref{fig:mutable-tree} montre un organigramme qui est mis à jour dans un langage impératif. Après l'opération, la référence originale (\texttt{organigramme}) pointe à la même structure d'arbre, mais la structure a été modifiée. N'importe quel code qui utilise cet organigramme doit savoir que d'autres parties de code peuvent le modifier.
+La figure \ref{fig:mutable-tree} montre un organigramme qui est mis à jour dans un langage impératif. Après l'opération, la référence originale (\texttt{organigramme}) pointe la même structure d'arbre, mais la structure a été modifiée. N'importe quel code qui utilise cet organigramme doit savoir que d'autres parties de code peuvent le modifier.
 
-La figure \ref{fig:immutable-tree} montre un organigramme dans un langage fonctionnel. L'opération ne modifie pas l'arbre original, mais elle plutôt crée une nouvelle référence et elle fabrique une nouvelle copie seulement de la partie d'arbre qui change. Les deux versions du organigramme peuvent bien coexister. Le code qui utilise la référence \texttt{organigramme} peut supposer que les données ne changent jamais.
+La figure \ref{fig:immutable-tree} montre un organigramme dans un langage fonctionnel. L'opération ne modifie pas l'arbre original, mais elle crée plutôt une nouvelle référence et elle fabrique seulement une nouvelle copie de la partie d'arbre qui change. Les deux versions d'organigramme peuvent coexister. Le code qui utilise la référence \texttt{organigramme} peut supposer que les données ne changent jamais.
 
-Nous reconnaissons depuis peu que les structures des données immuables sont souvent préférable. Elles facilitent de raisonner sur le comportement d'un programme parce qu'on n'a pas à se soucier de la possibilité que les données peuvent être changées de manière imprévue.
+Nous reconnaissons depuis peu que les structures des données immuables sont souvent préférables. Elles facilitent à raisonner sur le comportement d'un programme parce qu'on n'a pas à se soucier de la possibilité que les données peuvent être changées de manière imprévue.
 
 \begin{figure}[h]
 	\begin{lstlisting}[language=Caml]
@@ -249,21 +249,46 @@ end
 
 \section{L'inférence de types et la concision}
 
-OCaml et Eiffel sont langages à typage statique. Cela signifie qu'on sait le type de chaque valeur dans un programme---par exemple: un nombre entier, un nombre réel, une chaîne de caractères, un organigramme. Cependant, il y a une différence clé. En Eiffel, on doit indiquer le type d'un valeur très explicitement.
+OCaml et Eiffel sont des langages à typage statique. Cela signifie qu'on connaît le type de chaque valeur dans un programme---par exemple: un nombre entier, un nombre réel, une chaîne de caractères, un organigramme. Cependant, il y a une différence clé. À Eiffel, on doit indiquer le type de chaque valeur très explicitement.
 
-La figure \ref{fig:type-inference-code} montre une fonction en OCaml qui construit un message. La fonction prend deux arguments: \texttt{verbeux}, qui indique si le résultat devrait être verbeux, et \texttt{message}, qui est le message verbeux. Le message non-verbeux est une chaîne vide. On ne précise jamais les types exacts de \texttt{verbeux} ou \texttt{message}: OCaml les calcule automatiquement. \texttt{verbeux} doit être booléen, également \texttt{message} doit être une chaîne de caractères.
+La figure \ref{fig:type-inference-code} montre une fonction OCaml qui construit un message. La fonction prend deux arguments: \texttt{verbeux}, qui indique si le résultat devrait être verbeux, et \texttt{message}, qui est le message verbeux. Le message non-verbeux est une chaîne vide. On ne précise jamais les types exacts de \texttt{verbeux} ou \texttt{message}: OCaml les calcule automatiquement. \texttt{verbeux} doit être booléen, \texttt{message} doit également être une chaîne de caractères.
 
-Comparez avec Eiffel (la Figure \ref{fig:without-type-inference-code}): on doit écrire \texttt{: BOOLEAN} et \texttt{: STRING} pour indiquer les types. Le code est beaucoup plus long. La force d'OCaml est qu'il permet aux programmeurs d'écrire des programmes concis et compréhensible. Ces qualités rendent la maintenance plus facile.
+Comparez avec Eiffel (la Figure \ref{fig:without-type-inference-code}): on doit écrire \texttt{: BOOLEAN} et \texttt{: STRING} pour indiquer les types. Le code est beaucoup plus long. La force d'OCaml est qu'il permet aux programmeurs d'écrire des programmes concis et compréhensibles. Ces qualités rendent la maintenance plus facile.
 
 \section{L'application partielle et la composition de fonctions}
 
-Un autre aspect intéressant d'OCaml est l'application partielle de fonctions. Ceci utilise la curryfication, qui transforme une fonction à plusieurs arguments à une série de fonctions à un argument. Par exemple, considérez la fonction \texttt{add x y = x + y}, qui prend deux nombres entiers et renvoie la somme. Évidemment, \texttt{add 2 3} renvoie \texttt{5}.
+Un autre aspect intéressant d'OCaml est l'application partielle de fonctions. Elle utilise la curryfication, qui transforme une fonction à plusieurs arguments en une série de fonctions à un argument. Par exemple, considérez la fonction \texttt{add x y = x + y}, qui prend deux nombres entiers et renvoie la somme. Évidemment, \texttt{add 2 3} renvoie \texttt{5}.
 
 On peut considérer cette fonction comme \texttt{(entier, entier) -> entier}: elle prend deux entiers et renvoie un entier. En fait, OCaml considère la fonction comme \texttt{entier -> (entier -> entier)}: une fonction qui prend un entier et renvoie une deuxième fonction, qui prend un entier et renvoie un entier. 
 
-On peut appliquer la fonction partiellement ainsi: \texttt{add6 = (add 6)}. Ceci rend \texttt{add2} comme une fonction \texttt{entier -> entier}. Elle prend un entier et le renvoie plus six. Par exemple, \texttt{add6 3} renvoie \texttt{9}.
+On peut appliquer la fonction partiellement ainsi: \texttt{add6 = (add 6)}. Ceci construit \texttt{add2} comme une fonction \texttt{entier -> entier}. Elle prend un entier et le renvoie plus six. Par exemple, \texttt{add6 3} renvoie \texttt{9}.
 
 L'application partielle, entre autres outils, est un mécanisme puissant de combinaison de fonctions. Cela permet la réutilisation simple et fiable du code, un facteur important pour la qualité.
+
+\chapter{Une comparaison}
+
+Il est intéressant d'observer que, même si OCaml encourage naturellement un style strict de programmation, il ne le fait pas appliquer formellement. Par contre, les programmes Eiffel ne sont pas écrits dans un style très strict, mais ils respectent les autres règles (les préconditions, les postconditions, les pointeurs nuls etc.) rigoureusement. Comparons comment les deux langages proposent des différents types de la sécurité:
+
+\section{L'organisation et l'encapsulation}
+
+Une bonne organisation est essentielle pour rendre un système maintenable. De plus, il est important d'encapsuler les parties d'un système afin qu'ils n'interfèrent pas entre eux ni exposent leur fonctionnement interne.
+
+Dans OCaml, l'unité organisationnelle est le \texttt{module}. Dans Eiffel, c'est la classe (\texttt{class}). La différence principale est qu'une classe signifie un objet; il peut exister de nombreuses instances d'une classe. Les \texttt{module}s signifie une collection d'éléments liés---par exemple la définition d'un type \texttt{liste} et les opérations relatives comme \texttt{filtrer} et \texttt{insérer}. On peut instancier la \texttt{liste} elle-même, mais pas le module entier.
+
+Il y a des avantages et des inconvénients dans les deux approches. Lorsque l'on utilise les \texttt{module}s, il est souvent plus difficile de trouver tous les opérations disponibles ou de comprendre comment les \texttt{module}s interagissent. Le fonctionnement interne est souvent exposé, qui peut être confus.
+
+D'autre part, les classes fournissent d'habitude uniquement les opérations pertinentes, ce qui aide une bonne encapsulation en cachant les détails de mise en œuvre. Cependant les instances d'une classe maintiennent un état interne qui peut être désynchronisé et changé de manière imprévue.
+
+\section{Le système de types}
+
+Un bon système de types est un moyen crucial pour assurer que les données dans un programme sont du type correct. Les valeurs imprévues causent des pannes et des comportements incorrects.
+
+Les deux langages empêchent le déréférencement de pointeurs nuls, un avantage énorme par rapport aux autres langages plus populaires. On peut dire que l'approche d'OCaml est supérieure, parce qu'il offre des abstractions meilleures comme le type \texttt{option}. Ce type indique explicitement que la valeur peut être vide, obligeant le programmeur à supporter ce cas. La méthode d'Eiffel---obligeant l'initialisation de chaque référence---est plus rudimentaire.
+
+
+
+Donc il y a un compromis: il faut choisir l'ensemble des caractéristiques qui conviennent au problème à résoudre.
+
 
 \end{document}          
 
@@ -275,3 +300,4 @@ L'application partielle, entre autres outils, est un mécanisme puissant de comb
 % - reusability - composition vs inheritance
 % - failings of both compared to other languages - Haskell, Idris, (Coq? - it's french),
 %   compiler certification
+% - popularity of OO vs functional languages now and in the future
