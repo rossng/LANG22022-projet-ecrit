@@ -13,7 +13,7 @@
 
 % Language
 \usepackage[utf8]{inputenc}
-\usepackage[frenchb]{babel}
+\usepackage[francais]{babel}
 \usepackage[autostyle=true,french=guillemets]{csquotes}
 
 % Code listings and figures
@@ -63,13 +63,13 @@ Par contre, OCaml est un langage multi-paradigme---mais, premièrement, c’est 
 
 \chapter{Eiffel}
 
-Eiffel a été conçu avec un seul objectif : améliorer la qualité de logiciel. La plupart de sa fonctionnalité est destinée à servir cet objectif.
+Eiffel a été conçu avec un seul objectif : améliorer la qualité logicielle. La plupart de sa fonctionnalité est destinée à servir cet objectif.
  
 \section{La conception par contrat}
 
 La caractéristique la plus inhabituelle d'Eiffel est « la conception par contrat ». Très souvent, lorsque les informaticiens veulent prouver qu’un algorithme est correct, ils utilisent les \enquote{préconditions}, les \enquote{postconditions} et les \enquote{invariants}. Si on examine un fragment de code, une précondition est un fait qui doit être vraie juste avant l’exécution du code. De même, une postcondition doit être vraie juste après l’exécution. Un invariant doit être vrai en tout temps.
 
-La plupart des langages n'encodent pas	ces concepts mathématiques, mais Eiffel l'incite. La Figure \ref{fig:pre-post-condition} montre un exemple. Nous définissons une classe qui représente un compte bancaire. C'est très simple. Premièrement, il y a un attribut \texttt{solde} qui stocke la somme d'argent qui est actuellement dans le compte. En outre, il y a une routine \texttt{dépose} qui prend en argument un montant d'argent pour ajouter au compte. Le bloc \texttt{require} contient une précondition: nous ne pouvons pas ajouter un montant négatif au compte. Le block \texttt{ensure} contient une postcondition: après avoir déposé un montant, le solde du compte doit être le solde initial plus la somme ajoutée.
+La plupart des langages n'encodent pas	ces concepts mathématiques, mais Eiffel l'incite. La figure \ref{fig:pre-post-condition} montre un exemple. Nous définissons une classe qui représente un compte bancaire. C'est très simple. Premièrement, il y a un attribut \texttt{solde} qui stocke la somme d'argent qui est actuellement dans le compte. En outre, il y a une routine \texttt{déposer} qui prend en argument un montant d'argent à ajouter au compte. Le bloc \texttt{require} contient une précondition: nous ne pouvons pas ajouter un montant négatif au compte. Le block \texttt{ensure} contient une postcondition: après avoir déposé un montant, le solde du compte doit être le solde initial plus la somme ajoutée.
 
 \begin{figure}[h]
 	\begin{lstlisting}[language=Eiffel]
@@ -78,7 +78,7 @@ class COMPTE_BANCAIRE
 feature
   solde: INTEGER
 
-  dépose (somme: INTEGER)
+  déposer (somme: INTEGER)
     require
       somme >= 0
     do
@@ -89,7 +89,7 @@ feature
 end
 	\end{lstlisting}
 	
-	\caption{Un exemple d'utiliser une précondition et une postcondition\protect\footnotemark}
+	\caption{Un exemple d'utilisation d'une précondition et d'une postcondition\protect\footnotemark}
 	\label{fig:pre-post-condition}
 \end{figure}
 
@@ -97,7 +97,7 @@ end
 
 \section{La séparation commande-requête}
 
-Cet exemple montre aussi le principe de séparation commande-requête. \texttt{solde} est une requête---elle retourne le solde, mais elle ne peut pas changer l'état du compte. En revanche, \texttt{dépose} est une commande. Elle ne donne un résultat, mais elle changera l'état du compte. Ce principe rassure le programmeur que l'extraction du solde ne causera pas des effets secondaires inattendus.
+Cet exemple montre aussi le principe de \enquote{séparation commande-requête}. \texttt{solde} est une requête---elle renvoie le solde, mais elle ne peut pas changer l'état du compte. En revanche, \texttt{déposer} est une commande. Elle ne donne un résultat, mais elle changera l'état du compte. Ce principe garantit aux programmeurs que l'extraction du solde ne causera pas d'effets secondaires inattendus.
 
 \begin{figure}[h]
 	\begin{lstlisting}[language=Eiffel]
@@ -138,13 +138,13 @@ end
 
 \section{La sécurité contre le déréférencement de pointeurs nuls}
 
-Eiffel empêche aussi un problème rencontré souvent dans d'autres langages---le déréférencement de pointeurs nuls. Ceci se produit lorsqu'on crée une référence mais ne l'attache jamais à un objet. Comparez les figures \ref{fig:null-deref-condition} et \ref{fig:nonnull-deref-condition}. Figure \ref{fig:null-deref-condition} montre une situation courante dans les autres langages. Une référence \texttt{compte} est déclarée par la ligne \ref{line:reference-declaration}, mais aucun objet réel est créé. Quand l'instruction \texttt{print (compte.somme)} (ligne \ref{line:null-deref}) est exécutée, le logiciel plantera. Figure \ref{fig:nonnull-deref-condition} est une version correcte : \texttt{compte} est initialisé par l'instruction \texttt{create compte} (ligne \ref{line:object-creation}). Eiffel détecte automatiquement la version incorrecte, qui empêche beaucoup de plantages.
+Eiffel empêche aussi un problème rencontré souvent dans d'autres langages---le déréférencement de pointeurs nuls. Ceci se produit lorsqu'on crée une référence mais ne lui attache jamais à un objet. Comparez les figures \ref{fig:null-deref-condition} et \ref{fig:nonnull-deref-condition}. La figure \ref{fig:null-deref-condition} montre une situation courante dans les autres langages. Une référence \texttt{compte} est déclarée par la \ref{line:reference-declaration}\ieme{} ligne, mais aucun objet réel n'est créé. Quand l'instruction \texttt{print (compte.somme)} (ligne \ref{line:null-deref}) est exécutée, le logiciel plante. La figure \ref{fig:nonnull-deref-condition} est une version correcte : \texttt{compte} est initialisé par l'instruction \texttt{create compte} (ligne \ref{line:object-creation}). Eiffel détecte automatiquement la version incorrecte. Cette détection empêche beaucoup de plantages.
 
 \section{Réutilisabilité et extensibilité}
 
-Deux des grands principes d'Eiffel sont réutilisabilité et extensibilité. Ces mots résume l'idée que les logiciels doivent---autant que possible---être réutilisés ou modifiés plutôt que développés à partir de zéro. Le but est---dans tout nouveau système---de maximiser la quantité du code qui a déjà fait ses preuves.
+Deux des grands principes d'Eiffel sont la réutilisabilité et l'extensibilité. Ces mots résume l'idée que les logiciels doivent---autant que possible---être réutilisés ou modifiés plutôt que développés à partir de zéro. Le but est---dans tout nouveau système---de maximiser la quantité du code qui a déjà fait ses preuves.
 
-Eiffel offre toutes les méthodes normales pour permettre la réutilisabilité et l'extensibilité---par exemple l'héritage, les bibliothèques communes et les classes génériques. Cependant, Eiffel a une approche intéressant pour faire l'héritage multiple.
+Eiffel offre toutes les méthodes normales pour permettre la réutilisabilité et l'extensibilité---par exemple l'héritage, les bibliothèques communes et les classes génériques. Cependant, Eiffel a une approche intéressante pour gérer l'héritage multiple.
 
 \begin{figure}[h]
 	\centering
@@ -153,7 +153,7 @@ Eiffel offre toutes les méthodes normales pour permettre la réutilisabilité e
 	\label{fig:multiple-inheritance}
 \end{figure}
 
-Dans la figure \ref{fig:multiple-inheritance} il y a un exemple du héritage multiple. Nous définissons un simple compte bancaire avec juste un solde. Les types plus précis de compte sont un compte avec un solde à découvert, un compte d'épargne et un compte qui combine les deux. Les deux classes \texttt{COMPTE\_DÉCOUVERT} et \texttt{COMPTE\_ÉPARGNE} définissent les routines supplémentaires \texttt{dépose(somme: INTEGER)} et \texttt{ferme}. Que devrait faire le \texttt{COMPTE\_COMBINÉ} quand ces routines s'appellent? Eiffel propose quelques solutions.
+Dans la figure \ref{fig:multiple-inheritance}, il y a un exemple d'héritage multiple. Nous définissons un compte bancaire simple avec juste un solde. Les types plus précis de compte sont un compte avec un solde à découvert, un compte épargne et un compte qui combine les deux. Les deux classes \texttt{COMPTE\_DÉCOUVERT} et \texttt{COMPTE\_ÉPARGNE} définissent les routines supplémentaires \texttt{déposer(somme: INTEGER)} et \texttt{fermer}. Que devrait faire le \texttt{COMPTE\_COMBINÉ} quand ces routines sont appelées? Eiffel propose quelques solutions.
 
 
 \begin{figure}[h]
@@ -161,20 +161,20 @@ Dans la figure \ref{fig:multiple-inheritance} il y a un exemple du héritage mul
 class COMPTE_COMBINÉ
   inherit COMPTE_DÉCOUVERT
     redefine	(*@\label{line:redefine}@*)
-      dépose
+      déposer
     rename		(*@\label{line:rename}@*)
-      ferme as ferme_découvert
+      fermer as fermer_découvert
   end
   
   inherit COMPTE_ÉPARGNE
     redefine
-      dépose
+      déposer
     rename
-      ferme as ferme_épargne
+      fermer as fermer_épargne
   end
   
   feature
-    dépose (somme: INTEGER)
+    déposer (somme: INTEGER)
       do
         ...
       end
@@ -185,11 +185,11 @@ end
 	\label{fig:multiple-inheritance-code}
 \end{figure}
 
-La figure \ref{fig:multiple-inheritance-code} montre deux des outils de gestion d'héritage multiple. \texttt{redefine dépose} (ligne \ref{line:redefine}) signifie que les mises en oeuvre de \texttt{dépose} (par \texttt{COMPTE\_DÉCOUVERT} et \texttt{COMPTE\_ÉPARGNE}) sont à être ignorées et remplacées par une nouvelle définition dans \texttt{COMPTE\_COMBINÉ}.
+La figure \ref{fig:multiple-inheritance-code} montre deux des outils de gestion d'héritage multiple. \texttt{redefine déposer} (ligne \ref{line:redefine}) signifie que les mises en oeuvre de \texttt{déposer} (par \texttt{COMPTE\_DÉCOUVERT} et \texttt{COMPTE\_ÉPARGNE}) doivent être ignorées et remplacées par une nouvelle définition dans \texttt{COMPTE\_COMBINÉ}.
 
 Par ailleurs, nous pouvons aussi renommer les fonctionnalités : ici, le \texttt{ferme} de \texttt{COMPTE\_DÉCOUVERT} devient \texttt{ferme\_découvert} (ligne \ref{line:rename}). Quoiqu'on fasse, Eiffel garantit que les préconditions, les postconditions et les invariants sont observés.
 
-Ce système permet la réutilisation de plusieurs classes dans une seule classe dérivée.
+Ce système permet la réutilisation de plusieurs classes dans une seule classe dérivée. % TODO: explain more
 
 \chapter{OCaml}
 
@@ -243,7 +243,7 @@ construis_message (verbeux: BOOLEAN;
   end
 end
 	\end{lstlisting}
-	\caption{Une requête qui équivaut à la Figure \ref{fig:type-inference-code}}
+	\caption{Une requête qui équivaut à la figure \ref{fig:type-inference-code}}
 	\label{fig:without-type-inference-code}
 \end{figure}
 
@@ -253,7 +253,7 @@ OCaml et Eiffel sont des langages à typage statique. Cela signifie qu'on conna�
 
 La figure \ref{fig:type-inference-code} montre une fonction OCaml qui construit un message. La fonction prend deux arguments: \texttt{verbeux}, qui indique si le résultat devrait être verbeux, et \texttt{message}, qui est le message verbeux. Le message non-verbeux est une chaîne vide. On ne précise jamais les types exacts de \texttt{verbeux} ou \texttt{message}: OCaml les calcule automatiquement. \texttt{verbeux} doit être booléen, \texttt{message} doit également être une chaîne de caractères.
 
-Comparez avec Eiffel (la Figure \ref{fig:without-type-inference-code}): on doit écrire \texttt{: BOOLEAN} et \texttt{: STRING} pour indiquer les types. Le code est beaucoup plus long. La force d'OCaml est qu'il permet aux programmeurs d'écrire des programmes concis et compréhensibles. Ces qualités rendent la maintenance plus facile.
+Comparez avec Eiffel (la figure \ref{fig:without-type-inference-code}): on doit écrire \texttt{: BOOLEAN} et \texttt{: STRING} pour indiquer les types. Le code est beaucoup plus long. La force d'OCaml est qu'il permet aux programmeurs d'écrire des programmes concis et compréhensibles. Ces qualités rendent la maintenance plus facile.
 
 \section{L'application partielle et la composition de fonctions}
 
@@ -279,13 +279,19 @@ Il y a des avantages et des inconvénients dans les deux approches. Lorsque l'on
 
 D'autre part, les classes fournissent d'habitude uniquement les opérations pertinentes, ce qui aide une bonne encapsulation en cachant les détails de mise en œuvre. Cependant les instances d'une classe maintiennent un état interne qui peut être désynchronisé et changé de manière imprévue.
 
+\section{La réutilisation de code}
+
+La réutilisation de code ...
+
 \section{Le système de types}
 
 Un bon système de types est un moyen crucial pour assurer que les données dans un programme sont du type correct. Les valeurs imprévues causent des pannes et des comportements incorrects.
 
+Alors que les deux langages sont fortement typés, il ne fait aucun doute que le typage d'OCaml a plus de rigueur académique. OCaml ont les types algébriques et les types fonctions, la curryfication, l'application partielle et l'inférence de types.
+
 Les deux langages empêchent le déréférencement de pointeurs nuls, un avantage énorme par rapport aux autres langages plus populaires. On peut dire que l'approche d'OCaml est supérieure, parce qu'il offre des abstractions meilleures comme le type \texttt{option}. Ce type indique explicitement que la valeur peut être vide, obligeant le programmeur à supporter ce cas. La méthode d'Eiffel---obligeant l'initialisation de chaque référence---est plus rudimentaire.
 
-
+Bien que ces fonctionnalités supplémentaires d'OCaml n'améliorer pas nécessairement sa sécurité, elles permettent le code plus concis et plus réutilisable.
 
 Donc il y a un compromis: il faut choisir l'ensemble des caractéristiques qui conviennent au problème à résoudre.
 
