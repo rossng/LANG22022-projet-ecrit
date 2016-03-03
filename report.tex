@@ -281,11 +281,13 @@ D'autre part, les classes fournissent d'habitude uniquement les opérations pert
 
 \section{La réutilisation de code}
 
-La réutilisation de code ...
+Pouvoir réutiliser facilement de code est une panacée. Le code réutilisé est déjà conçu, déjà écrit et déjà testé. Tous les fonctionnalités qui aident la réutilisabilité sont bénéfiques.
 
-\section{Le système de types}
+Les deux langages ont des mécanismes très différents de réutilisation. Les unités de réutilisation d'OCaml sont des fonctions. On peut composer des fonctions (peut-être écrits par des personnes différentes) pour créer une chaîne de transformations de données. L'unité d'Eiffel est la classe. Les classes forment un réseau interconnecté, dans lequel chaque classe parle à plusieurs autres. Cette interdépendance rend la réutilisation plus difficile, malgré de nombreux outils pour l'héritage. Parce que les fonctions d'OCaml ont d'habitude moins des dépendances, elles sont plus simples à réutiliser.
 
-Un bon système de types est un moyen crucial pour assurer que les données dans un programme sont du type correct. Les valeurs imprévues causent des pannes et des comportements incorrects.
+\section{Le système de types et l'exactitude du logiciel}
+
+Le logiciel est de haute qualité seulement s'il est correct. Un bon système de types est, par exemple, un moyen crucial pour assurer que les données dans un programme sont du type correct. Les valeurs imprévues causent des pannes et des comportements incorrects.
 
 Alors que les deux langages sont fortement typés, il ne fait aucun doute que le typage d'OCaml a plus de rigueur académique. OCaml ont les types algébriques et les types fonctions, la curryfication, l'application partielle et l'inférence de types.
 
@@ -293,17 +295,14 @@ Les deux langages empêchent le déréférencement de pointeurs nuls, un avantag
 
 Bien que ces fonctionnalités supplémentaires d'OCaml n'améliorer pas nécessairement sa sécurité, elles permettent le code plus concis et plus réutilisable.
 
-Donc il y a un compromis: il faut choisir l'ensemble des caractéristiques qui conviennent au problème à résoudre.
+Cependant Eiffel offre néanmoins une proposition intéressante: des préconditions, des postconditions, des invariants. Ces fonctionnalités agissent un peu comme un système de types étendu, un peu comme des tests unitaires. L'inconvénient est que les erreurs sont trouvées à l'exécution, pas à la compilation.
 
+\chapter{Conclusion}
 
-\end{document}          
+Donc il y a un compromis: il faut choisir l'ensemble des caractéristiques qui conviennent au problème à résoudre. Dans l'ensemble, OCaml semble être un choix meilleur pour les projets académiques, mathématiques ou conceptuellement complexes. Eiffel pourrait être une meilleure solution pour des projets de grandes entreprises qui sont assez simple mais très grands. Dans le monde réel, aucun des deux est très populaire. Cependant il semble qu'OCaml et des autres langages ML sont plus utilisé\footnote{Voir ML, Standard ML, OCaml à \url{http://www.tiobe.com/tiobe_index}}
 
-% Points to compare:
-% - command-request separation vs pure functions/immutability/referential transparency
-%   bizarrely, OCaml provides less guarantees than Eiffel - but encourages better style
-% - object-oriented vs functional - reliance on side effects means problems easier to model
-%   in Eiffel but harder to reason about once written
-% - reusability - composition vs inheritance
-% - failings of both compared to other languages - Haskell, Idris, (Coq? - it's french),
-%   compiler certification
-% - popularity of OO vs functional languages now and in the future
+Il y a aussi d'autres langages qui essayent de résoudre les mêmes problèmes. Scala, inventé par Martin Odersky (professeur à l'EPFL), combine les idées orientés objet (comme Eiffel) et fonctionnels (comme OCaml). Une critique fréquente est que cette combinaison rend Scala trop complèxe. L'Inria a plusieurs projets marquants à côté d'OCaml, y compris Pharo (qui porte sur le débogage interactive) et Coq (un assistant de preuve utilisant une théorie des types d'ordre supérieur). Sur un plan global Haskell (profondément influencé par OCaml) gagne en popularité grâce à son système de types incroyablement puissant. Depuis Eiffel est publié, l'automatisation de test---qui est similaire aux postconditions et les invariants---est devenu universelle.
+
+En conclusion, donc, on peut dire que le vrai pouvoir d'Eiffel et d'OCaml sont les idées qu'ils ont établi. Une nouvelle génération de langages---Haskell, Rust, Elm, F#, Scala---ont pris ces idées. Espérons qu'ensemble ils amélioreront le logiciel.
+
+\end{document}
