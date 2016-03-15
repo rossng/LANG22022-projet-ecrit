@@ -6,10 +6,15 @@
 % TOC
 \setcounter{secnumdepth}{-1}
 
+% Bibliography
+\usepackage{biblatex}
+\addbibresource{bibliography.bib}
+
 % Layout
 \setlength{\parindent}{0em}
 \setlength{\parskip}{1em}
-\linespread{1.6}
+\usepackage{setspace}
+\usepackage[a4paper,top=1in,bottom=1in]{geometry}
 
 % Language
 \usepackage[utf8]{inputenc}
@@ -27,6 +32,60 @@
 \restylefloat{figure}
 \captionsetup{belowskip=12pt,aboveskip=4pt}
 
+% Glossary
+\usepackage[toc]{glossaries}
+\makenoidxglossaries
+
+\newglossaryentry{bogue}
+{	name={bogue},
+	plural={bogues},
+	description={un défaut d'un logiciel}}
+
+\newglossaryentry{Inria}
+{	name={Inria},
+	description={l'Institut national de recherche en informatique et en automatique}}
+
+\newglossaryentry{EPFL}
+{	name={EPFL},
+	description={l'École polytechnique fédérale de Lausanne}}
+
+\newglossaryentry{EPFZ}
+{	name={EPFZ},
+	description={l'École polytechnique fédérale de Zurich (en allemand \emph{Eidgenössische Technische Hochschule Zürich})}}
+
+\newglossaryentry{algorithme}
+{	name={algorithme},
+	description={une série d'actions pour accomplir une tâche}}
+
+\newglossaryentry{dereferencement}
+{	name={déréférencement},
+	description={la conversion d'une référence à l'information stockée à cet endroit}}
+
+\newglossaryentry{bibliotheque}
+{	name={bibliothèque},
+	plural={bibliothèques},
+	description={une collection de routines qui peuvent être partagées entre les programmes}}
+
+\newglossaryentry{heritage-multiple}{
+	name={héritage multiple},
+	description={le mécanisme par lequel des classes héritent de fonctionnalités de multiples autres classes}}
+
+\newglossaryentry{immuabilite}{
+	name={immuabilité},
+	description={un objet immuable ne peut pas être modifié}}
+
+\newglossaryentry{encapsulation}{
+	name={encapsulation},
+	description={l'encapsulation est la protection des données d'un objet contre l'accès direct. Au lieu de cela, l'objet fournit des façons contrôlées pour l'accès.}}
+
+\newglossaryentry{fonction}{
+	name={fonction},
+	plural={fonctions},
+	description={une fonction est un objet mathématique---une relation qui transforme les éléments d'un ensemble en un autre ensemble. Dans certains langages, une fonction peut avoir d'autres effets.}}
+
+
+%\makeindex
+
 \lstset{
 	basicstyle={\linespread{1}\ttfamily},
 	extendedchars=true,
@@ -40,22 +99,38 @@
 }
 
 % Title Page
-\title{Eiffel et OCaml---deux langages, deux approches pour obtenir la qualité des logiciels}
-\author{Ross Gardiner}
+%\title{Eiffel et OCaml---deux langages, deux approches pour obtenir la qualité des logiciels}
+%\author{Ross Gardiner}
 
 
 \begin{document}
-\maketitle
+\begin{titlepage}
+	\centering
+	\vfill
+	{\bfseries\Large
+		Eiffel et OCaml---deux langages, deux approches pour obtenir la qualité des logiciels
+		\vskip2cm
+	}
+	\large{Ross Gardiner (rg14820)}
+	\vfill
+	\raisebox{-0.5\height}{\includegraphics[width=4cm]{eiffel-logo.png}}
+	\hspace*{.2in}
+	\raisebox{-0.5\height}{\includegraphics[width=4cm]{ocaml-logo.png}}
+	\vfill
+	\vfill
+\end{titlepage}
 
 \tableofcontents
 
+\doublespacing
+
 \chapter{Introduction}
 
-De nos jours, les logiciels sont partout : portables, avions, lave-vaisselles, lampes. Pour citer Marc Andreessen, \enquote{les logiciels mangent le monde}. Malheureusement, ces logiciels sont souvent bogués, m\^{e}me dangereux.
+De nos jours, les logiciels sont partout : portables, avions, lave-vaisselles, lampes. Pour citer Marc Andreessen, \enquote{les logiciels mangent le monde}. Malheureusement, ces logiciels sont souvent bogués, même dangereux.
 
-Depuis de nombreuses années, l’industrie du logiciel essaye de trouver des méthodes pour améliorer la qualité de son logiciel. Plusieurs éminents informaticiens français ont développé des nouveaux langages à cette fin. Dans ce projet, je décrirai deux langages de programmation : Eiffel et OCaml. Les deux tentent d’assurer la sécurité contre les bogues et les comportements inattendus, mais ils ont des approches assez différentes. Je vais examiner et comparer leurs fonctionnements et leurs caractéristiques.
+Depuis de nombreuses années, l’industrie du logiciel essaye de trouver des méthodes pour améliorer la qualité de son logiciel. Plusieurs éminents informaticiens français ont développé des nouveaux langages à cette fin. Dans ce projet, je décrirai deux langages de programmation : Eiffel\footnote{\url{https://www.eiffel.com/}} et OCaml\footnote{\url{http://ocaml.org/}}. Les deux tentent d’assurer la sécurité contre les \glspl{bogue} et les comportements inattendus, mais ils ont des approches assez différentes. Je vais examiner et comparer leurs fonctionnements et leurs caractéristiques.
 
-Bien qu'OCaml---datant de 1996---soit plus récent qu'Eiffel---de 1986---ses origines sont plutôt plus anciennes.  OCaml dérive de ML, développé à Édimbourg en 1973. OCaml lui-m\^{e}me a débuté à l’INRIA, un institut de recherche français. Eiffel a été créé par Bertrand Meyer, un informaticien français qui est actuellement professeur de génie logiciel à l’ETH Zurich.
+Bien qu'OCaml---datant de 1996\cite{ocamldate}---soit plus récent qu'Eiffel---de 1986\cite{eiffeldate}---ses origines sont plutôt plus anciennes.  OCaml dérive de ML, développé à Édimbourg en 1973. OCaml lui-même a débuté à l’\gls{Inria}, un institut de recherche français. Eiffel a été créé par Bertrand Meyer, un informaticien français qui est actuellement professeur de génie logiciel à l’\gls{EPFZ}.
 
 Eiffel est un langage \enquote{orienté objet}, ce qui signifie qu'il modèle le monde comme une collection d’objets. Chaque objet peut effectuer des actions (\enquote{commandes}), et chaque objet a des propriétés (\enquote{requêtes}).
 
@@ -67,7 +142,7 @@ Eiffel a été conçu avec un seul objectif : améliorer la qualité logicielle.
  
 \section{La conception par contrat}
 
-La caractéristique la plus inhabituelle d'Eiffel est « la conception par contrat ». Très souvent, lorsque les informaticiens veulent prouver qu’un algorithme est correct, ils utilisent les \enquote{préconditions}, les \enquote{postconditions} et les \enquote{invariants}. Si on examine un fragment de code, une précondition est un fait qui doit être vraie juste avant l’exécution du code. De même, une postcondition doit être vraie juste après l’exécution. Un invariant doit être vrai en tout temps.
+La caractéristique la plus inhabituelle d'Eiffel est « la conception par contrat ». Très souvent, lorsque les informaticiens veulent prouver qu’un \gls{algorithme} est correct, ils utilisent les \enquote{préconditions}, les \enquote{postconditions} et les \enquote{invariants}. Si on examine un fragment de code, une précondition est un fait qui doit être vraie juste avant l’exécution du code. De même, une postcondition doit être vraie juste après l’exécution. Un invariant doit être vrai en tout temps.
 
 La plupart des langages n'encodent pas	ces concepts mathématiques, mais Eiffel l'incite. La figure \ref{fig:pre-post-condition} montre un exemple. Nous définissons une classe qui représente un compte bancaire. C'est très simple. Premièrement, il y a un attribut \texttt{solde} qui stocke la somme d'argent qui est actuellement dans le compte. En outre, il y a une routine \texttt{déposer} qui prend en argument un montant d'argent à ajouter au compte. Le bloc \texttt{require} contient une précondition: nous ne pouvons pas ajouter un montant négatif au compte. Le block \texttt{ensure} contient une postcondition: après avoir déposé un montant, le solde du compte doit être le solde initial plus la somme ajoutée.
 
@@ -113,7 +188,7 @@ feature
 end
 	\end{lstlisting}
 	
-	\caption{Un exemple d'un déréférencement d'un pointeur nul}
+	\caption{Un exemple d'un \gls{dereferencement} d'un pointeur nul}
 	\label{fig:null-deref-condition}
 \end{figure}
 
@@ -136,15 +211,15 @@ end
 	\label{fig:nonnull-deref-condition}
 \end{figure}
 
-\section{La sécurité contre le déréférencement de pointeurs nuls}
+\section{La sécurité contre le \gls{dereferencement} de pointeurs nuls}
 
-Eiffel empêche aussi un problème rencontré souvent dans d'autres langages---le déréférencement de pointeurs nuls. Ceci se produit lorsqu'on crée une référence mais ne lui attache jamais à un objet. Comparez les figures \ref{fig:null-deref-condition} et \ref{fig:nonnull-deref-condition}. La figure \ref{fig:null-deref-condition} montre une situation courante dans les autres langages. Une référence \texttt{compte} est déclarée par la \ref{line:reference-declaration}\ieme{} ligne, mais aucun objet réel n'est créé. Quand l'instruction \texttt{print (compte.somme)} (ligne \ref{line:null-deref}) est exécutée, le logiciel plante. La figure \ref{fig:nonnull-deref-condition} est une version correcte : \texttt{compte} est initialisé par l'instruction \texttt{create compte} (ligne \ref{line:object-creation}). Eiffel détecte automatiquement la version incorrecte. Cette détection empêche beaucoup de plantages.
+Eiffel empêche aussi un problème rencontré souvent dans d'autres langages---le \gls{dereferencement} de pointeurs nuls. Ceci se produit lorsqu'on crée une référence mais ne lui attache jamais à un objet. Comparez les figures \ref{fig:null-deref-condition} et \ref{fig:nonnull-deref-condition}. La figure \ref{fig:null-deref-condition} montre une situation courante dans les autres langages. Une référence \texttt{compte} est déclarée par la \ref{line:reference-declaration}\ieme{} ligne, mais aucun objet réel n'est créé. Quand l'instruction \texttt{print (compte.somme)} (ligne \ref{line:null-deref}) est exécutée, le logiciel plante. La figure \ref{fig:nonnull-deref-condition} est une version correcte : \texttt{compte} est initialisé par l'instruction \texttt{create compte} (ligne \ref{line:object-creation}). Eiffel détecte automatiquement la version incorrecte. Cette détection empêche beaucoup de plantages.
 
 \section{Réutilisabilité et extensibilité}
 
-Deux des grands principes d'Eiffel sont la réutilisabilité et l'extensibilité. Ces mots résume l'idée que les logiciels doivent---autant que possible---être réutilisés ou modifiés plutôt que développés à partir de zéro. Le but est---dans tout nouveau système---de maximiser la quantité du code qui a déjà fait ses preuves.
+Deux des grands principes d'Eiffel sont la réutilisabilité et l'extensibilité\cite{eiffelextensibility}. Ces mots résume l'idée que les logiciels doivent---autant que possible---être réutilisés ou modifiés plutôt que développés à partir de zéro. Le but est---dans tout nouveau système---de maximiser la quantité du code qui a déjà fait ses preuves.
 
-Eiffel offre toutes les méthodes normales pour permettre la réutilisabilité et l'extensibilité---par exemple l'héritage, les bibliothèques communes et les classes génériques. Cependant, Eiffel a une approche intéressante pour gérer l'héritage multiple.
+Eiffel offre toutes les méthodes normales pour permettre la réutilisabilité et l'extensibilité---par exemple l'héritage, les \glspl{bibliotheque} communes et les classes génériques. Cependant, Eiffel a une approche intéressante pour gérer l'héritage multiple.
 
 \begin{figure}[h]
 	\centering
@@ -153,7 +228,7 @@ Eiffel offre toutes les méthodes normales pour permettre la réutilisabilité e
 	\label{fig:multiple-inheritance}
 \end{figure}
 
-Dans la figure \ref{fig:multiple-inheritance}, il y a un exemple d'héritage multiple. Nous définissons un compte bancaire simple avec juste un solde. Les types plus précis de compte sont un compte avec un solde à découvert, un compte épargne et un compte qui combine les deux. Les deux classes \texttt{COMPTE\_DÉCOUVERT} et \texttt{COMPTE\_ÉPARGNE} définissent les routines supplémentaires \texttt{déposer(somme: INTEGER)} et \texttt{fermer}. Que devrait faire le \texttt{COMPTE\_COMBINÉ} quand ces routines sont appelées? Eiffel propose quelques solutions.
+Dans la figure \ref{fig:multiple-inheritance}, il y a un exemple d'\gls{heritage-multiple}. Nous définissons un compte bancaire simple avec juste un solde. Les types plus précis de compte sont un compte avec un solde à découvert, un compte épargne et un compte qui combine les deux. Les deux classes \texttt{COMPTE\_DÉCOUVERT} et \texttt{COMPTE\_ÉPARGNE} définissent les routines supplémentaires \texttt{déposer(somme: INTEGER)} et \texttt{fermer}. Que devrait faire le \texttt{COMPTE\_COMBINÉ} quand ces routines sont appelées? Eiffel propose quelques solutions.
 
 
 \begin{figure}[h]
@@ -195,7 +270,7 @@ Ce système permet la réutilisation de plusieurs classes dans une seule classe 
 
 Comparé à Eiffel, OCaml ne porte pas sur la prévention des erreurs. Malgré cela, une partie significative de sa fonctionnalité est utile pour écrire du code stable.
 
-\section{La programmation \enquote{fonctionnelle} et l'immutabilité par défaut}
+\section{La programmation \enquote{fonctionnelle} et l'\gls{immuabilite} par défaut}
 
 OCaml incitera fortement un style de programmation \enquote{fonctionnelle}. Le style traditionnel de la programmation est \enquote{impératif}. Dans la programmation fonctionnelle, on évite de causer des effets secondaires; dans la programmation impératif, les effets secondaires sont la norme. Un effet secondaire clé est la modification des données (la \enquote{mutation}).
 
@@ -251,25 +326,25 @@ end
 
 OCaml et Eiffel sont des langages à typage statique. Cela signifie qu'on connaît le type de chaque valeur dans un programme---par exemple: un nombre entier, un nombre réel, une chaîne de caractères, un organigramme. Cependant, il y a une différence clé. À Eiffel, on doit indiquer le type de chaque valeur très explicitement.
 
-La figure \ref{fig:type-inference-code} montre une fonction OCaml qui construit un message. La fonction prend deux arguments: \texttt{verbeux}, qui indique si le résultat devrait être verbeux, et \texttt{message}, qui est le message verbeux. Le message non-verbeux est une chaîne vide. On ne précise jamais les types exacts de \texttt{verbeux} ou \texttt{message}: OCaml les calcule automatiquement. \texttt{verbeux} doit être booléen, \texttt{message} doit également être une chaîne de caractères.
+La figure \ref{fig:type-inference-code} montre une \gls{fonction} OCaml qui construit un message. La \gls{fonction} prend deux arguments: \texttt{verbeux}, qui indique si le résultat devrait être verbeux, et \texttt{message}, qui est le message verbeux. Le message non-verbeux est une chaîne vide. On ne précise jamais les types exacts de \texttt{verbeux} ou \texttt{message}: OCaml les calcule automatiquement. \texttt{verbeux} doit être booléen, \texttt{message} doit également être une chaîne de caractères.
 
 Comparez avec Eiffel (la figure \ref{fig:without-type-inference-code}): on doit écrire \texttt{: BOOLEAN} et \texttt{: STRING} pour indiquer les types. Le code est beaucoup plus long. La force d'OCaml est qu'il permet aux programmeurs d'écrire des programmes concis et compréhensibles. Ces qualités rendent la maintenance plus facile.
 
 \section{L'application partielle et la composition de fonctions}
 
-Un autre aspect intéressant d'OCaml est l'application partielle de fonctions. Elle utilise la curryfication, qui transforme une fonction à plusieurs arguments en une série de fonctions à un argument. Par exemple, considérez la fonction \texttt{add x y = x + y}, qui prend deux nombres entiers et renvoie la somme. Évidemment, \texttt{add 2 3} renvoie \texttt{5}.
+Un autre aspect intéressant d'OCaml est l'application partielle de \glspl{fonction}. Elle utilise la curryfication, qui transforme une \gls{fonction} à plusieurs arguments en une série de \glspl{fonction} à un argument. Par exemple, considérez la \gls{fonction} \texttt{add x y = x + y}, qui prend deux nombres entiers et renvoie la somme. Évidemment, \texttt{add 2 3} renvoie \texttt{5}.
 
-On peut considérer cette fonction comme \texttt{(entier, entier) -> entier}: elle prend deux entiers et renvoie un entier. En fait, OCaml considère la fonction comme \texttt{entier -> (entier -> entier)}: une fonction qui prend un entier et renvoie une deuxième fonction, qui prend un entier et renvoie un entier. 
+On peut considérer cette \gls{fonction} comme \texttt{(entier, entier) -> entier}: elle prend deux entiers et renvoie un entier. En fait, OCaml considère la \gls{fonction} comme \texttt{entier -> (entier -> entier)}: une \gls{fonction} qui prend un entier et renvoie une deuxième fonction, qui prend un entier et renvoie un entier. 
 
-On peut appliquer la fonction partiellement ainsi: \texttt{add6 = (add 6)}. Ceci construit \texttt{add2} comme une fonction \texttt{entier -> entier}. Elle prend un entier et le renvoie plus six. Par exemple, \texttt{add6 3} renvoie \texttt{9}.
+On peut appliquer la \gls{fonction} partiellement ainsi: \texttt{add6 = (add 6)}. Ceci construit \texttt{add2} comme une \gls{fonction} \texttt{entier -> entier}. Elle prend un entier et le renvoie plus six. Par exemple, \texttt{add6 3} renvoie \texttt{9}.
 
-L'application partielle, entre autres outils, est un mécanisme puissant de combinaison de fonctions. Cela permet la réutilisation simple et fiable du code, un facteur important pour la qualité.
+L'application partielle, entre autres outils, est un mécanisme puissant de combinaison de \glspl{fonction}. Cela permet la réutilisation simple et fiable du code, un facteur important pour la qualité.
 
 \chapter{Une comparaison}
 
 Il est intéressant d'observer que, même si OCaml encourage naturellement un style strict de programmation, il ne l'impose pas formellement. Par contre, les programmes Eiffel ne sont pas écrits dans un style très strict, mais ils respectent rigoureusement les autres règles (les préconditions, les postconditions, les pointeurs nuls etc.). Comparons comment les deux langages proposent des différents types de sécurité:
 
-\section{L'organisation et l'encapsulation}
+\section{L'organisation et l'\gls{encapsulation}}
 
 Une bonne organisation est essentielle pour faciliter l'entretien. De plus, il est important d'encapsuler les parties d'un système afin qu'elles n'interfèrent pas entre elles ni exposent leur fonctionnement interne.
 
@@ -283,13 +358,13 @@ D'autre part, les classes fournissent d'habitude uniquement les opérations pert
 
 Pouvoir réutiliser facilement du code est une panacée. Le code réutilisé est déjà conçu, déjà écrit et déjà testé. Tous les fonctionnalités qui aident la réutilisabilité sont bénéfiques.
 
-Les deux langages ont des mécanismes très différents de réutilisation. Les unités de réutilisation d'OCaml sont des fonctions. On peut composer des fonctions (peut-être écrites par des personnes différentes) pour créer une chaîne de transformations de données. L'unité d'Eiffel est la classe. Les classes forment un réseau interconnecté, dans lequel chaque classe parle à plusieurs autres. Cette interdépendance rend la réutilisation plus difficile, malgré de nombreux outils pour l'héritage. Parce que les fonctions d'OCaml ont d'habitude moins de dépendances, elles sont plus simples à réutiliser.
+Les deux langages ont des mécanismes très différents de réutilisation. Les unités de réutilisation d'OCaml sont des \glspl{fonction}. On peut composer des \glspl{fonction} (peut-être écrites par des personnes différentes) pour créer une chaîne de transformations de données. L'unité d'Eiffel est la classe. Les classes forment un réseau interconnecté, dans lequel chaque classe parle à plusieurs autres. Cette interdépendance rend la réutilisation plus difficile, malgré de nombreux outils pour l'héritage. Parce que les \glspl{fonction} d'OCaml ont d'habitude moins de dépendances, elles sont plus simples à réutiliser.
 
 \section{Le système de types et l'exactitude du logiciel}
 
 Le logiciel est de haute qualité seulement s'il est correct. Un bon système de types est, par exemple, un moyen crucial pour assurer que les données dans un programme sont du type correct. Les valeurs imprévues causent des pannes et des comportements incorrects.
 
-Alors que les deux langages sont fortement typés, il ne fait aucun doute que le typage d'OCaml a plus de rigueur académique. OCaml a les types algébriques et les types fonctions, la curryfication, l'application partielle et l'inférence de types.
+Alors que les deux langages sont fortement typés, il ne fait aucun doute que le typage d'OCaml a plus de rigueur académique. OCaml a les types algébriques et les types \glspl{fonction}, la curryfication, l'application partielle et l'inférence de types.
 
 Les deux langages empêchent le déréférencement de pointeurs nuls, un avantage énorme par rapport aux autres langages plus populaires. On peut dire que l'approche d'OCaml est supérieure, parce qu'il offre des meilleures abstractions comme le type \texttt{option}. Ce type indique explicitement que la valeur peut être vide, obligeant le programmeur à soutenir ce cas. La méthode d'Eiffel---obligeant l'initialisation de chaque référence---est plus rudimentaire.
 
@@ -299,10 +374,16 @@ Cependant Eiffel offre néanmoins une proposition intéressante: des préconditi
 
 \chapter{Conclusion}
 
-Il y a donc un compromis: il faut choisir l'ensemble des caractéristiques qui conviennent au problème à résoudre. Dans l'ensemble, OCaml semble être un choix meilleur pour les projets académiques, mathématiques ou conceptuellement complexes. Eiffel pourrait être une meilleure solution pour des projets de grandes entreprises qui sont assez simple mais très grands. Dans le monde réel, aucun des deux n'est pas très populaire. Cependant il semble qu'OCaml et d'autres langages ML sont plus utilisés\footnote{Voir ML, Standard ML, OCaml à \url{http://www.tiobe.com/tiobe_index}}
+Il y a donc un compromis: il faut choisir l'ensemble des caractéristiques qui conviennent au problème à résoudre. Dans l'ensemble, OCaml semble être un choix meilleur pour les projets académiques, mathématiques ou conceptuellement complexes. Eiffel pourrait être une meilleure solution pour des projets de grandes entreprises qui sont assez simple mais très grands. Dans le monde réel, aucun des deux n'est pas très populaire. Cependant il semble qu'OCaml et d'autres langages ML sont plus utilisés\cite{tiobe}.
 
-Il y a aussi d'autres langages qui essayent de résoudre les mêmes problèmes. Scala, inventé par Martin Odersky (professeur à l'EPFL), combine l'orientation objet (comme Eiffel) et la programmation fonctionnelle (comme OCaml). Une critique fréquente est que cette combinaison rend Scala trop complexe. L'Inria a plusieurs projets marquants à côté d'OCaml, y compris Pharo (qui porte sur le débogage interactif) et Coq (un assistant de preuve utilisant une théorie des types d'ordre supérieur). Sur un plan global Haskell (profondément influencé par OCaml) gagne en popularité grâce à son système de types incroyablement puissant. Depuis la publication d'Eiffel, l'automatisation de test---qui est similaire aux postconditions et les invariants---est devenu universelle.
+Il y a aussi d'autres langages qui essayent de résoudre les mêmes problèmes. Scala\footnote{\url{http://www.scala-lang.org/}}, inventé par Martin Odersky (professeur à l'\gls{EPFL}), combine l'orientation objet (comme Eiffel) et la programmation fonctionnelle (comme OCaml). Une critique fréquente est que cette combinaison rend Scala trop complexe. L'\gls{Inria} a plusieurs projets marquants à côté d'OCaml, y compris Pharo\footnote{\url{http://pharo.org/}} (qui porte sur le débogage interactif) et Coq\footnote{\url{https://coq.inria.fr/}} (un assistant de preuve utilisant une théorie des types d'ordre supérieur). Sur un plan global Haskell\footnote{\url{https://www.haskell.org/}} (profondément influencé par OCaml) gagne en popularité grâce à son système de types incroyablement puissant. Depuis la publication d'Eiffel, l'automatisation de test---qui est similaire aux postconditions et les invariants---est devenu universelle.
 
-En conclusion, donc, on peut dire que le vrai pouvoir d'Eiffel et d'OCaml sont les idées qu'ils ont établi. Une nouvelle génération de langages---Haskell, Rust, Elm, F\#, Scala---ont pris ces idées. Espérons qu'ensemble ils amélioreront le logiciel.
+En conclusion, donc, on peut dire que le vrai pouvoir d'Eiffel et d'OCaml sont les idées qu'ils ont établi. Une nouvelle génération de langages---Haskell, Rust\footnote{\url{https://www.rust-lang.org/}}, Elm\footnote{\url{http://elm-lang.org/}}, F\#\footnote{\url{http://fsharp.org/}}, Scala---ont pris ces idées. Espérons qu'ensemble ils amélioreront le logiciel.
+
+%\glsaddall
+\printnoidxglossaries
+
+\nocite{eiffeldocs}
+\printbibliography
 
 \end{document}
